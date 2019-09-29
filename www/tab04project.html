@@ -1,0 +1,226 @@
+<!DOCTYPE HTML>
+<HTML>
+
+<HEAD>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- A biblioteca bundle já contem os arquivos JS do Bootstrap, Popper, e jQuery.
+    <script src="js/bootstrap.bundle.js"></script>-->
+    <title>FTT EC LP2 N1!!</title>
+    <LINK REL="stylesheet" HREF="css/bootstrap.css" />
+    <STYLE>
+        #moedas {
+            margin-bottom: 100px;
+        }
+        .card-titulo{
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid red;
+            padding-left: 20px;
+        }
+        .fundo {
+            background-image: url('img/background.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: right;
+            position: fixed;
+            height: 100vh;
+            width: 100vw;
+            z-index: -1;
+        }
+        .center-txt {
+            text-align: center;
+            color: black;
+            width: 90px;
+            padding: 4px;
+            margin:0;
+            border:0;
+        }
+        .button-selected {
+            background-color: #343a40;
+            color: white;
+            border-radius: 15px;
+        }       
+        .width-button-bar {
+            text-align: center;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            margin-right: 0;
+            margin-left: 0;
+            
+        }
+        .bottom-button-bar {
+            margin:0;
+            padding:0;
+            border:0;
+            width: 100%;
+        }
+        .icon-font {
+            font-size: 40px;   
+        }
+        #aluno{          
+            padding-top: 70px;
+            padding-bottom: 10px;
+        }     
+        article {
+            color: white;
+            margin-top: 20px;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.9);      
+            
+        }
+        h2 {
+            color: white;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+        }
+        p {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </STYLE>
+    <SCRIPT>
+        function reloadPage() {                 
+                    url = 'https://economia.awesomeapi.com.br/all' //'https://newsapi.org/v2/everything?q=' + newsSearchText + '&sortBy=publishedAt&apiKey=' + key;
+                    console.log(url);
+
+                    var xhr = new XMLHttpRequest();
+
+                    xhr.onload = function() {
+
+                        if (xhr.status >= 200 && xhr.status < 300) {
+
+                            console.log('success!', JSON.parse(xhr.responseText));
+                            var moedaData = JSON.parse(xhr.responseText);
+                            console.log(moedaData);
+                            createMoedaData(moedaData);
+
+                        } else {
+                            
+                            let error_message= "Ops! Erro!!!<br>" + xhr.statusText;
+                            console.log(error_message);
+                            document.getElementById("moedas").innerHTML = error_message;
+                        } //if
+
+                        console.log('Here we are...');
+                    };
+
+                    xhr.open('GET', url);
+                    xhr.send();                   
+                } 
+                function createMoedaData(nData) 
+                {         
+                    document.getElementById("moedas").innerHTML = "";
+                    for (i in nData) {
+                        var dataFormat = nData[i].create_date.substring(8,10) + '/' + nData[i].create_date.substring(5,7) + '/' + nData[i].create_date.substring(0,4);
+                        var htmlCodigos = /*html*/`
+                            <option value="${nData[i].code}">${nData[i].code} - ${nData[i].name}</option>
+                        `;
+
+                        var html = /*html*/`                        
+                        <article>
+                            <div class="card-titulo">
+                                <h2>${nData[i].name}</h2>
+                                <img src="img/moeda.gif" alt="" height="80px">
+                            </div>
+                            <div class="card-body">                     
+                                <p class="card-codigo">Código da moeda: ${nData[i].code}</p>
+                                <p class="card-data">Data da atualização: ${dataFormat}</p>
+                                <p class="card-valor">Valor: R$ ${nData[i].high}</p>
+                            </div>       
+                        </article>
+                        `;                                                                                    
+
+                        document.getElementById("nomeMoedas").insertAdjacentHTML('beforeend', htmlCodigos);
+                        document.getElementById("moedas").insertAdjacentHTML('beforeend', html);
+                        console.log('TST');
+
+                    } //for
+                    
+                   
+                    // remove imagens quebradas, deixa o card sem imagem
+                    document.querySelectorAll('img').forEach(function(img){
+                        img.onerror = function(){ this.style.display='none'; };
+                    });
+                }
+                function showMoeda(){
+                    var e = document.getElementById('nomeMoedas');
+                    var valor = e.options[e.selectedIndex].value;
+
+                    url = 'https://economia.awesomeapi.com.br/' + valor; //'https://newsapi.org/v2/everything?q=' + newsSearchText + '&sortBy=publishedAt&apiKey=' + key;
+                    console.log(url);
+
+                    var xhr = new XMLHttpRequest();
+
+                    xhr.onload = function() {
+
+                        if (xhr.status >= 200 && xhr.status < 300) {
+
+                            console.log('success!', JSON.parse(xhr.responseText));
+                            var moedaData = JSON.parse(xhr.responseText);
+                            console.log(moedaData);
+                            createMoedaData(moedaData);
+
+                        } else {
+                            
+                            let error_message= "Ops! Erro!!!<br>" + xhr.statusText;
+                            console.log(error_message);
+                            document.getElementById("moedas").innerHTML = error_message;
+                        } //if
+
+                        console.log('Here we are...');
+                    };
+
+                    xhr.open('GET', url);
+                    xhr.send();  
+                }
+    </SCRIPT>
+</HEAD>
+
+<BODY lang="pt-br" onload="reloadPage()">
+    <div class="fundo"></div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <a class="navbar-brand" href="#">&#x1F981; FTT EC LP2 N1!!!</a>
+
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+            <div class="navbar-nav float-right text-right pr-3">
+                <a class="nav-item nav-link" href="index.html">Splash</a>
+                <a class="nav-item nav-link" href="http://www.fundacaosalvadorarena.org.br/" target="newpage">CEFSA</a>
+                <a class="nav-item nav-link" href="about.html">Sobre</a>
+            </div>
+        </div>
+    </nav>
+
+    
+    <main class="container" id="aluno">
+        
+        <h2>TABELA DOS VALORES DAS MOEDAS</h2>  
+        <select name="nomeMoedas" id="nomeMoedas" onchange="showMoeda()">
+            <option value="all" id="all">Todas as moedas</option>
+            </select>  
+    </main>
+
+    <nav class="navbar fixed-bottom navbar-light bg-light width-button-bar">
+        <div class="row w-100 bottom-button-bar">
+            <div class="col-sm center-txt"><b onclick='window.location="tab01news.html"'>News<br><span class="icon-font">&#x1f4f0;</span></b>
+            </div>
+            <div class="col-sm center-txt"><b onclick='window.location="tab02map.html"'>Map<br><span class="icon-font">&#x1f4cc;</span></b>
+            </div>
+            <div class="col-sm center-txt"><b onclick='window.location="tab03todo.html"'>Todo<br><span class="icon-font">&#x1F4DD;</span></b>
+            </div>
+            <div class="col-sm center-txt button-selected"><b onclick='window.location="tab04project.html"'>???<br><span class="icon-font">&#x1F981;</span></b>
+            </div>
+        </div>
+    </nav>
+    <main class="container" id="moedas">
+        <!-- <img src="img/background.jpj"/ alt="loading..."> -->
+    </main>
+    
+</BODY>
+<!-- carga de scripts do Bootstrap, JQuery, Popper -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+</HTML>
